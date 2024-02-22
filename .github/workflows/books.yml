@@ -2,7 +2,7 @@ name: books
 
 on:
   schedule:
-    - cron: '*/10 * * * *'
+    - cron: '0 * * * *'
   workflow_dispatch:
       
 jobs:
@@ -12,10 +12,9 @@ jobs:
       TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
       TELEGRAM_CHAT_ID_TO_NOTIFY: ${{ secrets.TELEGRAM_CHAT_ID_TO_NOTIFY }}
       TELEGRAM_API_URL: ${{ secrets.TELEGRAM_API_URL }}
-      REMOTEOK_API_URL: ${{ secrets.REMOTEOK_API_URL }}
-      REMOTEOK_WEBSITE_URL: ${{ secrets.REMOTEOK_WEBSITE_URL }}
-      JOB_TAGS: ${{ secrets.JOB_TAGS }}
-      JOBS_PER_TAG: ${{ secrets.JOBS_PER_TAG }}
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+      SUPABASE_URL_BOOKS: ${{ secrets.SUPABASE_URL_BOOKS }}
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v2
