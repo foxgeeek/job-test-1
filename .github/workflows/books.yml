@@ -2,7 +2,7 @@ name: books
 
 on:
   schedule:
-    - cron: '0 12 * * *' # Every day at 12pm
+    - cron: '*/1 * * * *' # Every day at 12pm
   workflow_dispatch:
       
 jobs:
