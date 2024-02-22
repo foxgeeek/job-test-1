@@ -2,12 +2,12 @@ name: books
 
 on:
   schedule:
-    - cron: '*/1 * * * *' # Every day at 12pm
+    - cron: '0 0 * * 0' # Every day at 12pm
   workflow_dispatch:
       
 jobs:
   build:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     env:
       TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
       TELEGRAM_CHAT_ID_TO_NOTIFY: ${{ secrets.TELEGRAM_CHAT_ID_TO_NOTIFY }}
