@@ -1,4 +1,4 @@
-name: books
+name: Twitter
 
 on:
   schedule:
@@ -21,4 +21,4 @@ jobs:
       with:
         node-version: '20'
     - run: npm install
-    - run: npm start
+    - run: npm run start-twitter

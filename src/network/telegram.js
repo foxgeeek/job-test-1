@@ -77,5 +77,5 @@ async function sendText(text) {
 function getRandomInt(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min; // O intervalo é inclusivo do min e max
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
