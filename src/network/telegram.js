@@ -39,7 +39,8 @@ async function run() {
       return
     }
     console.log('Não existe mais nenhum post agendado...');
-
+    await limparTabela();
+    await limparArmazenamento();
   } catch (err) {
     console.log(err);
   }
@@ -65,3 +66,48 @@ async function sendText(text) {
   await axios.post(url, data);
 }
 
+async function limparTabela() {
+  try {
+    // Limpar a tabela inteira
+    const { error }
+      = await supabaseAPI
+      .from('books-control')
+      .delete()
+      .eq('posted', true);
+
+    if (error) {
+      throw error;
+    }
+
+    console.log('Tabela limpa com sucesso');
+  } catch (error) {
+    console.error('Erro ao limpar a tabela:', error.message);
+  }
+}
+
+async function limparArmazenamento() {
+  try {
+    // Listar todos os arquivos no armazenamento
+    const { data, error }
+      = await supabaseAPI
+      .storage
+      .from('images')
+      .list();
+
+    if (error) {
+      throw error;
+    }
+
+    // Excluir cada arquivo individualmente
+    for (const file of data) {
+      await supabaseAPI
+        .storage
+        .from('images')
+        .remove([file.name]);
+    }
+
+    console.log('Armazenamento limpo com sucesso');
+  } catch (error) {
+    console.error('Erro ao limpar o armazenamento:', error.message);
+  }
+}
