@@ -1,14 +1,29 @@
 require('dotenv').config();
-const axios = require('axios');
+const { TwitterApi } = require("twitter-api-v2");
+const request = require("request");
+const fs = require("fs");
 const { createClient } = require('@supabase/supabase-js');
 const {
-  TELEGRAM_BOT_TOKEN,
-  TELEGRAM_CHAT_ID_TO_NOTIFY,
-  TELEGRAM_API_URL,
+  TWITTER_API_KEY,
+  TWITTER_API_SECRET_KEY,
+  TWITTER_ACCESS_TOKEN,
+  TWITTER_ACCESS_TOKEN_SECRET,
+  TWITTER_BEARER_TOKEN,
+  TWITTER_CLIENT_ID,
+  TWITTER_CLIENT_SECRET,
   SUPABASE_URL,
   SUPABASE_ANON_KEY
 } = process.env;
 const supabaseAPI = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const client = new TwitterApi({
+  appKey: TWITTER_API_KEY,
+  appSecret: TWITTER_API_SECRET_KEY,
+  accessToken: TWITTER_ACCESS_TOKEN,
+  accessSecret: TWITTER_ACCESS_TOKEN_SECRET,
+  clientId: TWITTER_CLIENT_ID,
+  clientSecret: TWITTER_CLIENT_SECRET,
+});
 
 run();
 
@@ -23,7 +38,7 @@ async function run() {
       .neq('content', '')
       .eq('posted', false)
       .eq('schedule', true)
-      .eq('telegram', true)
+      .eq('twitter', true)
       .order('position');
 
     if (error) {
@@ -33,11 +48,11 @@ async function run() {
     
     if (data.length > 0) {
       // console.log('Fila de posts agendados:', data);
-      await sendImage(data[0].img);
-      await sendText(data[0].content);
+      await sendTweet(data[0].img, data[0].content);
       await supabaseAPI.from('books-control').update({ posted: true }).eq('id', data[0].id);
-      return
+      return;
     }
+
     console.log('Não existe mais nenhum post agendado...');
     await limparTabela();
     await limparArmazenamento();
@@ -46,25 +61,44 @@ async function run() {
   }
 }
 
-async function sendImage(image) {
-  const url = `${TELEGRAM_API_URL}/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
-  const data = {
-    chat_id: TELEGRAM_CHAT_ID_TO_NOTIFY,
-    photo: image,
-    disable_web_page_preview: true
-  };
-  await axios.post(url, data);
+async function sendTweet(image, text) {
+  
+
+  // const bearer = new TwitterApi(TWITTER_BEARER_TOKEN) ;
+  const twitterClient = client.readWrite;
+  // const twitterBearer = bearer.readOnly;
+
+  // TODO: organizar texto para pegar de acordo com a rede social pelo dashboard
+  newText = `
+  📚 The Seven Husbands of Evelyn Hugo: A Novel (English Edition)
+
+  🛒 Por: R$56,14
+
+  🔗 Link: https://ofertasdelivros.com.br/o/?c=B01M5IJM2U
+
+  👉🏻 Valor sujeito a alteração sem aviso prévio
+  `
+
+  downloadImage(image, 'twitter-image-post.jpeg', async function(){
+    try {
+      const mediaId = await twitterClient.v1.uploadMedia('./twitter-image-post.jpeg')
+      await twitterClient.v2.tweet({
+        text: newText,
+        media: {
+          media_ids: [mediaId]
+        }
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  });
 }
 
-async function sendText(text) {
-  const url = `${TELEGRAM_API_URL}/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-  const data = {
-    chat_id: TELEGRAM_CHAT_ID_TO_NOTIFY,
-    disable_web_page_preview: true,
-    text
-  };
-  await axios.post(url, data);
-}
+async function downloadImage (uri, filename, callback) {
+  request.head(uri, function (err, res, body) {
+    request(uri).pipe(fs.createWriteStream(filename)).on("close", callback);
+  });
+};
 
 async function limparTabela() {
   try {
@@ -73,7 +107,7 @@ async function limparTabela() {
       = await supabaseAPI
       .from('books-control')
       .delete()
-      .eq('telegram', true)
+      .eq('twitter', true)
       .eq('posted', true);
 
     if (error) {
@@ -112,3 +146,4 @@ async function limparArmazenamento() {
     console.error('Erro ao limpar o armazenamento:', error.message);
   }
 }
+
