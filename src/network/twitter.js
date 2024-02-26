@@ -48,8 +48,7 @@ async function run() {
     
     if (data.length > 0) {
       // console.log('Fila de posts agendados:', data);
-      await sendTweet(data[0].twitter_image, data[0].content);
-      await supabaseAPI.from('books-control').update({ posted: true }).eq('id', data[0].id);
+      await sendTweet(data[0].twitter_image, data[0].content, data);
       return;
     }
 
@@ -61,9 +60,8 @@ async function run() {
   }
 }
 
-async function sendTweet(image, text) {
+async function sendTweet(image, text, data) {
   
-
   // const bearer = new TwitterApi(TWITTER_BEARER_TOKEN) ;
   const twitterClient = client.readWrite;
   // const twitterBearer = bearer.readOnly;
@@ -88,6 +86,7 @@ async function sendTweet(image, text) {
           media_ids: [mediaId]
         }
       });
+      await supabaseAPI.from('books-control').update({ posted: true }).eq('id', data[0].id);
     } catch (e) {
       console.error(e);
     }
@@ -96,7 +95,7 @@ async function sendTweet(image, text) {
 
 async function downloadImage (uri, filename, callback) {
   request.head(uri, function (err, res, body) {
-    request(uri).pipe(fs.createWriteStream(filename)).on("close", callback);
+    request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
   });
 };
 
