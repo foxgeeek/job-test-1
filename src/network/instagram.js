@@ -3,6 +3,8 @@ const axios = require('axios');
 const { createClient } = require('@supabase/supabase-js');
 const {
   INSTAGRAM_ACCESS_TOKEN,
+  INSTAGRAM_URL_GRAPH_API,
+  INSTAGRAM_APP_ID,
   SUPABASE_URL,
   SUPABASE_ANON_KEY
 } = process.env;
