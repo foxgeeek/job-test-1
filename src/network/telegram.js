@@ -17,8 +17,8 @@ async function run() {
     const { data, error } = 
       await supabaseAPI.from('books-control')
       .select('*')
-      .neq('img', '')
-      .neq('img', null)
+      .neq('telegram_image', '')
+      .neq('telegram_image', null)
       .neq('content', null)
       .neq('content', '')
       .eq('posted', false)
@@ -33,14 +33,14 @@ async function run() {
     
     if (data.length > 0) {
       // console.log('Fila de posts agendados:', data);
-      await sendImage(data[0].img);
+      await sendImage(data[0].telegram_image);
       await sendText(data[0].content);
       await supabaseAPI.from('books-control').update({ posted: true }).eq('id', data[0].id);
       return
     }
     console.log('Não existe mais nenhum post agendado...');
-    await limparTabela();
-    await limparArmazenamento();
+    // await limparTabela();
+    // await limparArmazenamento();
   } catch (err) {
     console.log(err);
   }
