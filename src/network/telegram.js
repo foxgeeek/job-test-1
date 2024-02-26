@@ -19,9 +19,9 @@ async function run() {
       .select('*')
       .neq('telegram_image', '')
       .neq('telegram_image', null)
-      .neq('content', null)
-      .neq('content', '')
-      .eq('posted', false)
+      .neq('telegram_content', null)
+      .neq('telegram_content', '')
+      .eq('telegram_posted', false)
       .eq('schedule', true)
       .eq('telegram', true)
       .order('position');
@@ -33,10 +33,9 @@ async function run() {
     
     if (data.length > 0) {
       // console.log('Fila de posts agendados:', data);
-      await sendImage(data[0].telegram_image);
-      await sendText(data[0].content);
-      await supabaseAPI.from('books-control').update({ posted: true }).eq('id', data[0].id);
-      return
+      await sendImage(data[0].telegram_image, data[0].telegram_content, data[0].id);
+      // await sendText(data[0].telegram_content);
+      return;
     }
     console.log('Não existe mais nenhum post agendado...');
     // await limparTabela();
@@ -46,14 +45,20 @@ async function run() {
   }
 }
 
-async function sendImage(image) {
-  const url = `${TELEGRAM_API_URL}/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
-  const data = {
-    chat_id: TELEGRAM_CHAT_ID_TO_NOTIFY,
-    photo: image,
-    disable_web_page_preview: true
-  };
-  await axios.post(url, data);
+async function sendImage(image, text, postId) {
+  try {
+    const url = `${TELEGRAM_API_URL}/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
+    const data = {
+      chat_id: TELEGRAM_CHAT_ID_TO_NOTIFY,
+      photo: image,
+      caption: text,
+      disable_web_page_preview: true
+    };
+    await axios.post(url, data);
+    await supabaseAPI.from('books-control').update({ telegram_posted: true }).eq('id', postId);
+  } catch (err) {
+    console.error('Erro ao publicar no teelgram: ', err);
+  }
 }
 
 async function sendText(text) {
@@ -74,7 +79,7 @@ async function limparTabela() {
       .from('books-control')
       .delete()
       .eq('telegram', true)
-      .eq('posted', true);
+      .eq('telegram_posted', true);
 
     if (error) {
       throw error;

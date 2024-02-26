@@ -34,9 +34,9 @@ async function run() {
       .select('*')
       .neq('twitter_image', '')
       .neq('twitter_image', null)
-      .neq('content', null)
-      .neq('content', '')
-      .eq('posted', false)
+      .neq('twitter_content', null)
+      .neq('twitter_content', '')
+      .eq('twitter_posted', false)
       .eq('schedule', true)
       .eq('twitter', true)
       .order('position');
@@ -48,7 +48,7 @@ async function run() {
     
     if (data.length > 0) {
       // console.log('Fila de posts agendados:', data);
-      await sendTweet(data[0].twitter_image, data[0].content, data);
+      await sendTweet(data[0].twitter_image, data[0].twitter_content, data);
       return;
     }
 
@@ -72,7 +72,7 @@ async function sendTweet(image, text, data) {
 
   🛒 Por: R$56,14
 
-  🔗 Link: https://ofertasdelivros.com.br/o/?c=B01M5IJM2U
+  🔗 Link: https://horadaleitura.com.br/o/?c=B01M5IJM2U
 
   👉🏻 Valor sujeito a alteração sem aviso prévio
   `
@@ -86,7 +86,7 @@ async function sendTweet(image, text, data) {
           media_ids: [mediaId]
         }
       });
-      await supabaseAPI.from('books-control').update({ posted: true }).eq('id', data[0].id);
+      await supabaseAPI.from('books-control').update({ twitter_posted: true }).eq('id', data[0].id);
     } catch (e) {
       console.error(e);
     }
@@ -107,7 +107,7 @@ async function limparTabela() {
       .from('books-control')
       .delete()
       .eq('twitter', true)
-      .eq('posted', true);
+      .eq('twitter_posted', true);
 
     if (error) {
       throw error;
