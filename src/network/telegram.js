@@ -23,7 +23,7 @@ async function run() {
       .neq('telegram_content', '')
       .eq('telegram_posted', false)
       .eq('telegram_schedule', true)
-      .order('position');
+      .order('telegram_position');
 
     if (error) {
       throw error;

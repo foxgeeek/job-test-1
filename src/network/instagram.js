@@ -9,8 +9,8 @@ const {
   SUPABASE_ANON_KEY
 } = process.env;
 
+let accessToken = INSTAGRAM_ACCESS_TOKEN;
 const supabaseAPI = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-const accessToken = INSTAGRAM_ACCESS_TOKEN;
 
 // Verifica se o token de acesso está definido
 if (!accessToken) {
@@ -31,17 +31,21 @@ async function run() {
       .neq('instagram_content', '')
       .eq('instagram_posted', false)
       .eq('instagram_schedule', true)
-      .order('position');
+      .order('instagram_position');
 
     if (error) {
       throw error;
     }
     
+    const hasToken = await supabaseAPI.from('tokens-control').select('*').eq('network', 'instagram');
+    
+    if (hasToken.data.length > 0) {
+      accessToken = hasToken.data[0].access_token;
+    }
     
     if (data.length > 0) {
-      // console.log('Fila de posts agendados:', data);
+      console.log('Fila de posts agendados:', data);
       await sendStatus(data[0].instagram_image, data[0].instagram_content, data[0].id);
-      // await sendText(data[0].instagram_content);
       return;
     }
     console.log('Não existe mais nenhum post agendado...');
@@ -55,13 +59,13 @@ async function run() {
 async function sendStatus(image, text, postId) {
   try {    
     // Endpoint da API do Instagram para publicar nos Stories
-    // const endpointFeed = `${INSTAGRAM_URL_GRAPH_API}/${INSTAGRAM_APP_ID}/media?image_url=${image}&caption=${text}&access_token=${INSTAGRAM_ACCESS_TOKEN}`;
-    const endpointStories = `${INSTAGRAM_URL_GRAPH_API}/${INSTAGRAM_APP_ID}/media?image_url=${image}&media_type=STORIES&access_token=${INSTAGRAM_ACCESS_TOKEN}`;
+    // const endpointFeed = `${INSTAGRAM_URL_GRAPH_API}/${INSTAGRAM_APP_ID}/media?image_url=${image}&caption=${text}&access_token=${accessToken}`;
+    const endpointStories = `${INSTAGRAM_URL_GRAPH_API}/${INSTAGRAM_APP_ID}/media?image_url=${image}&media_type=STORIES&access_token=${accessToken}`;
 
     // Publicar o Stories
     axios.post(endpointStories)
     .then(async(response) => {
-      await axios.post(`${INSTAGRAM_URL_GRAPH_API}/${INSTAGRAM_APP_ID}/media_publish?creation_id=${response.data.id}&access_token=${INSTAGRAM_ACCESS_TOKEN}`)
+      await axios.post(`${INSTAGRAM_URL_GRAPH_API}/${INSTAGRAM_APP_ID}/media_publish?creation_id=${response.data.id}&access_token=${accessToken}`)
       .then(async(response) => {
         console.log('Postado... ', response.data);
         console.log('Stories publicado com sucesso:', response.data);
