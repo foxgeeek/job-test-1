@@ -22,7 +22,7 @@ async function run() {
       .neq('telegram_content', null)
       .neq('telegram_content', '')
       .eq('telegram_posted', false)
-      .eq('schedule', true)
+      .eq('telegram_schedule', true)
       .eq('telegram', true)
       .order('position');
 

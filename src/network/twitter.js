@@ -37,7 +37,7 @@ async function run() {
       .neq('twitter_content', null)
       .neq('twitter_content', '')
       .eq('twitter_posted', false)
-      .eq('schedule', true)
+      .eq('twitter_schedule', true)
       .eq('twitter', true)
       .order('position');
 

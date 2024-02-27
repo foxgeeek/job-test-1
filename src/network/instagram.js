@@ -30,7 +30,7 @@ async function run() {
       .neq('instagram_content', null)
       .neq('instagram_content', '')
       .eq('instagram_posted', false)
-      .eq('schedule', true)
+      .eq('instagram_schedule', true)
       .eq('instagram', true)
       .order('position');
 
