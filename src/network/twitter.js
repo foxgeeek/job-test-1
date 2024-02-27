@@ -38,7 +38,6 @@ async function run() {
       .neq('twitter_content', '')
       .eq('twitter_posted', false)
       .eq('twitter_schedule', true)
-      .eq('twitter', true)
       .order('position');
 
     if (error) {
@@ -106,7 +105,7 @@ async function limparTabela() {
       = await supabaseAPI
       .from('books-control')
       .delete()
-      .eq('twitter', true)
+      .eq('twitter_schedule', true)
       .eq('twitter_posted', true);
 
     if (error) {

@@ -31,7 +31,6 @@ async function run() {
       .neq('instagram_content', '')
       .eq('instagram_posted', false)
       .eq('instagram_schedule', true)
-      .eq('instagram', true)
       .order('position');
 
     if (error) {
@@ -84,7 +83,7 @@ async function limparTabela() {
       = await supabaseAPI
       .from('books-control')
       .delete()
-      .eq('instagram', true)
+      .eq('instagram_schedule', true)
       .eq('instagram_posted', true);
 
     if (error) {

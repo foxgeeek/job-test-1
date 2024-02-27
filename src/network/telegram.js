@@ -23,7 +23,6 @@ async function run() {
       .neq('telegram_content', '')
       .eq('telegram_posted', false)
       .eq('telegram_schedule', true)
-      .eq('telegram', true)
       .order('position');
 
     if (error) {
@@ -78,7 +77,7 @@ async function limparTabela() {
       = await supabaseAPI
       .from('books-control')
       .delete()
-      .eq('telegram', true)
+      .eq('telegram_schedule', true)
       .eq('telegram_posted', true);
 
     if (error) {
