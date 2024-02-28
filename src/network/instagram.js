@@ -44,7 +44,7 @@ async function run() {
     }
     
     if (data.length > 0) {
-      console.log('Fila de posts agendados:', data);
+      // console.log('Fila de posts agendados:', data);
       await sendStatus(data[0].instagram_image, data[0].instagram_content, data[0].id);
       return;
     }
