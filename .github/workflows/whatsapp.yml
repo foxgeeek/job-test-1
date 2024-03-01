@@ -9,9 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-      TELEGRAM_CHAT_ID_TO_NOTIFY: ${{ secrets.TELEGRAM_CHAT_ID_TO_NOTIFY }}
-      TELEGRAM_API_URL: ${{ secrets.TELEGRAM_API_URL }}
+      WHATSAPP_ACCESS_TOKEN: ${{ secrets.WHATSAPP_ACCESS_TOKEN }}
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
       SUPABASE_URL_BOOKS: ${{ secrets.SUPABASE_URL_BOOKS }}
