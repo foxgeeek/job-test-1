@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       WHATSAPP_ACCESS_TOKEN: ${{ secrets.WHATSAPP_ACCESS_TOKEN }}
+      WHATSAPP_ID_CHAT: ${{ secrets.WHATSAPP_ID_CHAT }}
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
       SUPABASE_URL_BOOKS: ${{ secrets.SUPABASE_URL_BOOKS }}

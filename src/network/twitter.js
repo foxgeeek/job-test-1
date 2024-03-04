@@ -65,22 +65,11 @@ async function sendTweet(image, text, data) {
   const twitterClient = client.readWrite;
   // const twitterBearer = bearer.readOnly;
 
-  // TODO: organizar texto para pegar de acordo com a rede social pelo dashboard
-  newText = `
-  📚 The Seven Husbands of Evelyn Hugo: A Novel (English Edition)
-
-  🛒 Por: R$56,14
-
-  🔗 Link: https://horadaleitura.com.br/o/?c=B01M5IJM2U
-
-  👉🏻 Valor sujeito a alteração sem aviso prévio
-  `
-
   downloadImage(image, 'twitter-image-post.jpeg', async function(){
     try {
       const mediaId = await twitterClient.v1.uploadMedia('./twitter-image-post.jpeg')
       await twitterClient.v2.tweet({
-        text: newText,
+        text: text,
         media: {
           media_ids: [mediaId]
         }

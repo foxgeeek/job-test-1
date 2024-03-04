@@ -3,6 +3,7 @@ const sdk = require('api')('@whapi/v1.7.5#13fxolr0rpbag');
 const { createClient } = require('@supabase/supabase-js');
 const {
   WHATSAPP_ACCESS_TOKEN,
+  WHATSAPP_ID_CHAT,
   SUPABASE_URL,
   SUPABASE_ANON_KEY
 } = process.env;
@@ -45,7 +46,7 @@ async function run() {
 async function sendMessageWhatsApp(image, text, postId) {
   try {
     sdk.sendMessageImage({
-      to: '120363231913572955@newsletter', // ID da Newsletter
+      to: WHATSAPP_ID_CHAT, // ID da Newsletter
       media: image,
       caption: text
     })
