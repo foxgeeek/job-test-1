@@ -1,5 +1,5 @@
 require('dotenv').config();
-const sdk = require('api')('@whapi/v1.7.5#13fxolr0rpbag');
+const sdk = require('api')('@whapi/v1.7.5#27slv2oltdcs6xr');
 const { createClient } = require('@supabase/supabase-js');
 const {
   WHATSAPP_ACCESS_TOKEN,
