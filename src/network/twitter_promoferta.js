@@ -4,30 +4,53 @@ const request = require("request");
 const fs = require("fs");
 const { createClient } = require('@supabase/supabase-js');
 const {
-  P_TWITTER_API_KEY,
-  P_TWITTER_API_SECRET_KEY,
-  P_TWITTER_ACCESS_TOKEN,
-  P_TWITTER_ACCESS_TOKEN_SECRET,
-  P_TWITTER_BEARER_TOKEN,
-  P_TWITTER_CLIENT_ID,
-  P_TWITTER_CLIENT_SECRET,
+  P_USER_ID,
   SUPABASE_URL,
   SUPABASE_ANON_KEY
 } = process.env;
+
+let client = null;
 const supabaseAPI = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-const client = new TwitterApi({
-  appKey: P_TWITTER_API_KEY,
-  appSecret: P_TWITTER_API_SECRET_KEY,
-  accessToken: P_TWITTER_ACCESS_TOKEN,
-  accessSecret: P_TWITTER_ACCESS_TOKEN_SECRET,
-  clientId: P_TWITTER_CLIENT_ID,
-  clientSecret: P_TWITTER_CLIENT_SECRET,
-});
+const getTwitterClient = async () => {
 
-run();
+  // Fetch the configuration for the specific user
+  const { data, error } = await supabaseAPI.from('configs-control').select('*').eq('user_id', P_USER_ID);
 
-async function run() {
+  if (error) {
+    console.error('Error fetching config:', error);
+    throw error;
+  }
+
+  // Check if there is a configuration available
+  if (data && data.length > 0) {
+    const config = data[0];
+    client = new TwitterApi({
+      appKey: config.twitter_api_key,
+      appSecret: config.twitter_api_secret_key,
+      accessToken: config.twitter_access_token,
+      accessSecret: config.twitter_access_token_secret,
+      clientId: config.twitter_client_id,
+      clientSecret: config.twitter_client_secret,
+    });
+
+    return client;
+  } else {
+    throw new Error('No configuration found for the specified user.');
+  }
+};
+
+// Using the promise to execute the function
+getTwitterClient()
+  .then(() => {
+    // Run your post function here
+    runPost();
+  })
+  .catch(error => {
+    console.error('Error initializing Twitter client:', error);
+  });
+
+async function runPost() {
   try {
     const { data, error } = 
       await supabaseAPI.from('offers-control')
@@ -55,7 +78,7 @@ async function run() {
     // await limparTabela();
     // await limparArmazenamento();
   } catch (err) {
-    console.log(err);
+    console.log('error: ',err);
   }
 }
 
