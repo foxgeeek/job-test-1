@@ -1,0 +1,21 @@
+name: Promoferta | Baby
+
+on:
+  schedule:
+    - cron: '*/20 * * * *'
+  workflow_dispatch:
+      
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      P_USER_ID: ${{ secrets.BABY_USER_ID }}
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v2
+      with:
+        node-version: '20'
+    - run: npm install
+    - run: npm run promoferta-baby

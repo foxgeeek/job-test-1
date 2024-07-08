@@ -4,12 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start-telegram": "node src/network/telegram.js",
-    "start-twitter": "node src/network/twitter.js",
-    "start-twitter-promoferta": "node src/network/twitter_promoferta.js",
-    "start-instagram": "node src/network/instagram.js",
-    "start-pinterest": "node src/network/pinterest.js",
-    "start-whatsapp": "node src/network/whatsapp.js"
+    "promoferta-baby": "node src/network/x_promoferta_baby.js",
+    "promoferta-books": "node src/network/x_promoferta_books.js",
+    "promoferta-tech": "node src/network/x_promoferta_tech.js"
   },
   "keywords": [],
   "author": "",

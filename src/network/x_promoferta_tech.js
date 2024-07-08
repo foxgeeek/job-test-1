@@ -4,7 +4,7 @@ const request = require("request");
 const fs = require("fs");
 const { createClient } = require('@supabase/supabase-js');
 const {
-  P_USER_ID,
+  TECH_USER_ID,
   SUPABASE_URL,
   SUPABASE_ANON_KEY
 } = process.env;
@@ -15,7 +15,7 @@ const supabaseAPI = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const getTwitterClient = async () => {
 
   // Fetch the configuration for the specific user
-  const { data, error } = await supabaseAPI.from('configs-control').select('*').eq('user_id', P_USER_ID);
+  const { data, error } = await supabaseAPI.from('configs-control').select('*').eq('user_id', TECH_USER_ID);
 
   if (error) {
     console.error('Error fetching config:', error);
@@ -61,6 +61,7 @@ async function runPost() {
       .neq('twitter_content', '')
       .eq('twitter_posted', false)
       .eq('twitter_schedule', true)
+      .eq('account_id', TECH_USER_ID)
       .order('twitter_position');
 
     if (error) {
