@@ -39,7 +39,7 @@ async function run() {
       .eq('twitter_posted', false)
       .eq('twitter_schedule', true)
       .order('twitter_position');
-
+ 
     if (error) {
       throw error;
     }
